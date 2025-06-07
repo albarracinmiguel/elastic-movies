@@ -9,26 +9,28 @@ const index = "movies";
 
 async function initIndex() {
   const exists = await elasticClient.indices.exists({ index });
-  if (!exists.body) {
+
+  if (!exists) {
     await elasticClient.indices.create({
       index,
-      body: {
-        mappings: {
-          properties: {
-            titulo: { type: "text" },
-            director: { type: "text" },
-            generos: { type: "keyword" },
-            anio: { type: "integer" },
-            sinopsis: { type: "text" },
-            puntuacion: { type: "float" },
-          },
+      mappings: {
+        properties: {
+          titulo: { type: "text" },
+          director: { type: "text" },
+          generos: { type: "text" },
+          anio: { type: "integer" },
+          sinopsis: { type: "text" },
+          puntuacion: { type: "float" },
         },
       },
     });
+    console.log(`Índice '${index}' creado.`);
+  } else {
+    console.log(`Índice '${index}' ya existe.`);
   }
 }
 
-async function indexPelicula(pelicula) {
+async function indexMovie(pelicula) {
   const result = await elasticClient.index({
     index,
     body: pelicula,
@@ -36,25 +38,24 @@ async function indexPelicula(pelicula) {
   return result;
 }
 
-async function buscarPeliculas(query) {
+async function searchMovies(query) {
   const result = await elasticClient.search({
     index,
-    body: {
-      query: {
-        multi_match: {
-          query,
-          fields: ["titulo", "director", "sinopsis"],
-        },
+    query: {
+      query_string: {
+        query: `*${query}*`,
+        fields: ["titulo", "director", "sinopsis", "generos"],
+        default_operator: "AND",
       },
     },
   });
 
-  return result.body.hits.hits.map((hit) => hit._source);
+  return result.hits?.hits?.map((hit) => hit._source) || [];
 }
 
 module.exports = {
   elasticClient,
   initIndex,
-  indexPelicula,
-  buscarPeliculas,
+  indexMovie,
+  searchMovies,
 };

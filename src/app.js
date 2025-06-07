@@ -1,8 +1,8 @@
 const express = require("express");
-const peliculasRouter = require("./routes/peliculas");
+const moviesRouter = require("./routes/movies");
 
 const app = express();
 app.use(express.json());
-app.use("/peliculas", peliculasRouter);
+app.use("/movies", moviesRouter);
 
 module.exports = app;
