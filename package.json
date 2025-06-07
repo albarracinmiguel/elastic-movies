@@ -1,0 +1,22 @@
+{
+  "name": "elastic-movies",
+  "version": "1.0.0",
+  "description": "elastic search movies repository w front and wsp",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^4.18.2",
+    "@elastic/elasticsearch": "^8.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  }
+}
